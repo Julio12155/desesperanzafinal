@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Vivero Solís</title>
+    <style>
+        :root {
+            --verde-acento: #5F8D4E;
+            --verde-suave: #7A9B76;
+            --texto: #333;
+            --beige: #F5F1E8;
+        }
+        body { font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: var(--beige); margin: 0; }
+        .login-container { background: white; padding: 2.5rem; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 350px; }
+        h2 { text-align: center; color: var(--verde-acento); margin-bottom: 1.5rem; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 0.95rem; }
+        input:focus { outline: none; border-color: var(--verde-acento); }
+        button { width: 100%; padding: 12px; background-color: var(--verde-acento); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem; margin-top: 10px; transition: background 0.3s; }
+        button:hover { background-color: var(--verde-suave); }
+        .error { color: #C07855; font-size: 0.9rem; text-align: center; display: none; margin-top: 10px; }
+        .back-link { display: block; text-align: center; margin-top: 15px; text-decoration: none; color: #666; font-size: 0.9rem; }
+        .back-link:hover { color: var(--verde-acento); }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Crear Cuenta</h2>
+        <form id="registroForm">
+            <input type="text" id="nombre" placeholder="Nombre completo" required>
+            <input type="email" id="correo" placeholder="Correo electrónico" required>
+            <input type="password" id="contra" placeholder="Contraseña (Mín. 8 caracteres)" required minlength="8">
+            <input type="password" id="confirmar" placeholder="Confirmar contraseña" required>
+            <button type="submit">Registrarse</button>
+            <p class="error" id="mensajeError"></p>
+        </form>
+        <a href="login.html" class="back-link">¿Ya tienes cuenta? Inicia sesión</a>
+        <a href="../tienda/index.html" class="back-link">Volver a la tienda</a>
+    </div>
+
+    <script src="js/registro.js"></script>
+</body>
+</html>

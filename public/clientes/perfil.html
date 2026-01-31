@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - Vivero Solís</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <style>
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); overflow: auto; }
+        .modal-content { background-color: var(--blanco); margin: 5% auto; padding: 2rem; border-radius: 15px; width: 90%; max-width: 700px; box-shadow: 0 5px 30px rgba(0,0,0,0.2); animation: fadeIn 0.3s; position: relative; }
+        .close { position: absolute; top: 1rem; right: 1.5rem; font-size: 1.5rem; font-weight: bold; color: var(--texto-claro); cursor: pointer; }
+        .detalle-row { display: flex; justify-content: space-between; padding: 0.8rem 0; border-bottom: 1px solid var(--borde); }
+        .detalle-header { font-weight: bold; background-color: var(--gris-claro); padding: 0.8rem; border-radius: 8px; margin-bottom: 1rem; }
+        .detalle-total { font-size: 1.2rem; font-weight: bold; color: var(--verde-acento); text-align: right; margin-top: 1.5rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../tienda/index.html" class="logo">Vivero Solís</a>
+            <ul class="nav-menu">
+                <li><a href="../tienda/index.html">Volver a la Tienda</a></li>
+                <li><a href="/api/auth/logout" style="color: var(--terracota);">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar-perfil">
+            <div class="user-header">
+                <div class="avatar" id="avatar-letra">U</div>
+                <h3 id="nombre-usuario">Cargando...</h3>
+                <p id="email-usuario" style="font-size: 0.9rem; color: var(--texto-claro);">...</p>
+            </div>
+            <div class="menu-opciones">
+                <button onclick="cambiarTab('direccion')" class="active" id="btn-direccion">📍 Dirección de Envío</button>
+                <button onclick="cambiarTab('pedidos')" id="btn-pedidos">📦 Mis Pedidos</button>
+            </div>
+        </aside>
+
+        <main class="content-area">
+            <div id="direccion" class="seccion active">
+                <h2 class="section-title">Dirección de Envío</h2>
+                <form id="form-direccion">
+                    <div class="form-group">
+                        <label>Teléfono de contacto</label>
+                        <input type="tel" id="tel" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Calle y Número</label>
+                        <input type="text" id="calle" required>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>Ciudad</label>
+                            <input type="text" id="ciudad" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Estado</label>
+                            <input type="text" id="estado" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Código Postal</label>
+                        <input type="text" id="cp" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Instrucciones de entrega (Opcional)</label>
+                        <textarea id="instrucc" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn-guardar">Guardar Dirección</button>
+                </form>
+            </div>
+
+            <div id="pedidos" class="seccion">
+                <h2 class="section-title">Historial de Pedidos</h2>
+                <div id="lista-pedidos">
+                    <p>Cargando historial...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="modalDetalle" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal()">&times;</span>
+            <h2 style="margin-bottom: 1.5rem; color: var(--verde-acento);">Detalles del Pedido #<span id="detalle-id"></span></h2>
+            
+            <div style="margin-bottom: 1.5rem;">
+                <p><strong>Fecha:</strong> <span id="detalle-fecha"></span></p>
+                <p><strong>Estado:</strong> <span id="detalle-estado"></span></p>
+            </div>
+
+            <div class="detalle-header" style="display: flex; justify-content: space-between;">
+                <span>Producto</span>
+                <span>Subtotal</span>
+            </div>
+            
+            <div id="detalle-items"></div>
+
+            <div class="detalle-row">
+                <span>Envío</span>
+                <span>Gratis</span>
+            </div>
+
+            <div class="detalle-total">
+                Total: $<span id="detalle-total"></span>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/perfil.js"></script>
+</body>
+</html>

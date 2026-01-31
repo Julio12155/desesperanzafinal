@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Carrito - Vivero Solís</title>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="index.html" class="logo">Vivero Solís</a>
+            <ul class="nav-menu">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="catalogo.html">Catálogo</a></li>
+                <li><a href="carrito.html" style="color: var(--verde-suave);">Carrito</a></li>
+                <li><a href="../clientes/login.html" class="btn-login">Mi Cuenta</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero" style="height: 30vh;">
+        <div>
+            <h1>Tu Carrito de Compras</h1>
+            <p>Revisa tus plantas antes de finalizar el pedido</p>
+        </div>
+    </section>
+
+    <section class="catalogo-section">
+        <div class="carrito-container">
+            <div class="carrito-items" id="lista-carrito">
+                <p style="text-align: center;">Cargando carrito...</p>
+            </div>
+
+            <div class="carrito-resumen">
+                <h3>Resumen del Pedido</h3>
+                <div class="resumen-row">
+                    <span>Subtotal</span>
+                    <span id="subtotal">$0.00</span>
+                </div>
+                <div class="resumen-row">
+                    <span>Envío</span>
+                    <span>Gratis</span>
+                </div>
+                <div class="resumen-total">
+                    <span>Total</span>
+                    <span id="total-final">$0.00</span>
+                </div>
+                <button class="btn-checkout" onclick="procesarCompra()">Proceder al Pago</button>
+                <a href="catalogo.html" style="display: block; text-align: center; margin-top: 1rem; color: var(--texto-claro); text-decoration: none;">Seguir comprando</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>Vivero Solís &copy; 2025</p>
+    </footer>
+
+    <script src="js/carrito.js"></script>
+</body>
+</html>

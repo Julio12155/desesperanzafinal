@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin - Vivero Solís</title>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+    <div class="admin-container">
+        <aside class="sidebar">
+            <div class="logo-admin">
+                <h2>Vivero Solís</h2>
+                <p>Panel Administrativo</p>
+            </div>
+
+            <nav>
+                <a href="dashboard.html" class="nav-item active">Dashboard</a>
+                <a href="productos.html" class="nav-item">Productos</a>
+                <a href="pedidos.html" class="nav-item">Pedidos</a>
+                <a href="clientes.html" class="nav-item">Clientes</a>
+                <a href="/api/auth/logout" class="nav-item" style="color: var(--terracota);">Cerrar Sesión</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="header-admin">
+                <div>
+                    <h1>Dashboard</h1>
+                    <p style="color: var(--texto-claro);">Resumen general de la tienda</p>
+                </div>
+                <div class="user-info">
+                    <div>
+                        <p style="font-weight: 600;">Administrador</p>
+                    </div>
+                    <div class="user-avatar">A</div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">Ventas Totales</span>
+
+                    </div>
+                    <div class="stat-value" id="stat-ventas">$0</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">Pedidos Pendientes</span>
+
+                    </div>
+                    <div class="stat-value" id="stat-pedidos">0</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">Alertas de Stock</span>
+
+                    </div>
+                    <div class="stat-value" id="stat-stock">0</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">Clientes Totales</span>
+
+                    </div>
+                    <div class="stat-value" id="stat-clientes">0</div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Pedidos Recientes</h2>
+                    <button class="btn btn-primary" onclick="window.location.href='pedidos.html'">Ver Todos</button>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Cliente</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th>Fecha</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-pedidos">
+                            <tr><td colspan="6">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Alertas de Inventario (Bajo Stock)</h2>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Stock Actual</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-alertas">
+                            <tr><td colspan="4">Cargando alertas...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

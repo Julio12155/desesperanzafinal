@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedidos - Admin Vivero Solís</title>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+    <div class="admin-container">
+        <aside class="sidebar">
+            <div class="logo-admin">
+                <h2>Vivero Solís</h2>
+                <p>Panel Administrativo</p>
+            </div>
+
+            <nav>
+                <a href="dashboard.html" class="nav-item">Dashboard</a>
+                <a href="productos.html" class="nav-item">Productos</a>
+                <a href="pedidos.html" class="nav-item active">Pedidos</a>
+                <a href="#" class="nav-item">Clientes</a>
+                <a href="/api/auth/logout" class="nav-item" style="color: var(--terracota);">Cerrar Sesión</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="header-admin">
+                <div>
+                    <h1>Gestión de Pedidos</h1>
+                    <p style="color: var(--texto-claro);">Revisa y actualiza el estado de las compras</p>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar">A</div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Listado de Pedidos</h2>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Cliente</th>
+                                <th>Fecha</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-pedidos">
+                            <tr><td colspan="6">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="modalPedido" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2>Detalles del Pedido #<span id="txt-id"></span></h2>
+                <span class="close" onclick="cerrarModal()">&times;</span>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Cliente</label>
+                    <input type="text" id="txt-cliente" readonly style="background-color: var(--gris-claro);">
+                </div>
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="text" id="txt-telefono" readonly style="background-color: var(--gris-claro);">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Dirección de Entrega</label>
+                <textarea id="txt-direccion" readonly rows="2" style="background-color: var(--gris-claro);"></textarea>
+            </div>
+
+            <h3 style="margin: 1rem 0; color: var(--verde-acento); font-size: 1.1rem;">Productos</h3>
+            <div class="table-container" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--borde); margin-bottom: 1rem;">
+                <table>
+                    <tbody id="lista-items"></tbody>
+                </table>
+            </div>
+
+            <form id="formEstado">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Estado del Pedido</label>
+                        <select id="sel-estado">
+                            <option value="pendiente">Pendiente</option>
+                            <option value="pagado">Pagado</option>
+                            <option value="enviado">Enviado</option>
+                            <option value="entregado">Entregado</option>
+                            <option value="cancelado">Cancelado</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Total</label>
+                        <input type="text" id="txt-total" readonly style="font-weight: bold;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Comentarios Internos (Solo Admin)</label>
+                    <textarea id="txt-comentarios" rows="3" placeholder="Anota detalles internos aquí..."></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/pedidos.js"></script>
+</body>
+</html> 
