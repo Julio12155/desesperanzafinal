@@ -11,9 +11,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (res.ok) {
             const data = await res.json();
             if (data.autenticado) {
-                // Usuario autenticado: mostrar "Mi perfil" o "Cerrar Sesión"
+                // Usuario autenticado: mostrar "Mi perfil"
                 navLink.textContent = 'Mi Perfil';
-                navLink.href = '/api/auth/logout';
+                navLink.href = '../clientes/perfil.html';
             } else {
                 // Usuario no autenticado
                 navLink.textContent = 'Iniciar Sesión';

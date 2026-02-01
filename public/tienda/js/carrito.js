@@ -139,10 +139,34 @@ async function procesarCompra() {
     }));
 
     try {
+        // Obtener ubicación del mapa (desde localStorage)
+        const ubicacionGuardada = localStorage.getItem('ubicacionSeleccionada');
+        
+        if (!ubicacionGuardada) {
+            alert('Por favor, selecciona una ubicación en el mapa antes de procesar la compra');
+            return;
+        }
+
+        const ubicacion = JSON.parse(ubicacionGuardada);
+        const { lat, lng, calle, numero, ciudad, estado, cp } = ubicacion;
+        
+        // Construir dirección completa
+        const calleCompleta = numero ? `${calle} ${numero}` : calle;
+        const direccion = `${calleCompleta}, ${ciudad}, ${estado} ${cp}`.trim();
+
+        const datosCompra = {
+            productos: productosParaBackend,
+            direccion: direccion,
+            lat: lat,
+            lng: lng
+        };
+
+        console.log('Enviando compra con datos:', datosCompra);
+
         const res = await fetch('/api/public/comprar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ productos: productosParaBackend })
+            body: JSON.stringify(datosCompra)
         });
 
         if (res.status === 401) {
@@ -158,18 +182,22 @@ async function procesarCompra() {
         }
 
         if (res.ok) {
-            alert('¡Compra realizada con éxito!');
+            const data = await res.json();
+            alert('¡Compra realizada con éxito! Pedido #' + data.pedidoId);
             localStorage.removeItem('carritoVivero');
+            localStorage.removeItem('ubicacionSeleccionada');
             window.location.href = '../clientes/perfil.html';
         } else {
-            alert('Hubo un error al procesar la compra.');
+            const error = await res.json();
+            alert('Hubo un error: ' + (error.detalles || 'Error al procesar la compra'));
         }
 
     } catch (error) {
-        console.error(error);
-        alert('Error de conexión');
+        console.error('Error en procesarCompra:', error);
+        alert('Error: ' + error.message);
     }
 }
+  
 
 async function cargarDireccionEnCarrito() {
     try {

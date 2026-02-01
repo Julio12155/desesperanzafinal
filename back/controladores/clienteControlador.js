@@ -102,4 +102,37 @@ const actualizarPerfil = async (req, res) => {
     }
 };
 
-module.exports = { obtenerPerfil, guardarDetallesEnvio, actualizarPerfil };
+const actualizarAvatar = async (req, res) => {
+    try {
+        // Validar sesión
+        if (!req.session || !req.session.usuarioID) {
+            return res.status(401).json({ error: 'No autenticado' });
+        }
+
+        const id = req.session.usuarioID;
+        
+        // Validar que hay archivo
+        if (!req.file) {
+            return res.status(400).json({ error: 'No se cargó ninguna imagen' });
+        }
+
+        const nuevoAvatar = req.file.filename;
+        console.log(`Actualizando avatar para usuario ${id}:`, nuevoAvatar);
+
+        // Actualizar en BD
+        await db.query(
+            'UPDATE usuarios SET avatar = ? WHERE id = ?',
+            [nuevoAvatar, id]
+        );
+
+        res.json({ 
+            mensaje: 'Avatar actualizado correctamente', 
+            avatar: nuevoAvatar 
+        });
+    } catch (error) {
+        console.error('Error actualizando avatar:', error);
+        res.status(500).json({ error: 'Error al actualizar avatar' });
+    }
+};
+
+module.exports = { obtenerPerfil, guardarDetallesEnvio, actualizarPerfil, actualizarAvatar };

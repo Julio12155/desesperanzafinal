@@ -38,6 +38,7 @@ router.get('/categorias', productoCtrl.obtenerCategorias);
 
 router.get('/pedidos', pedidoCtrl.obtenerPedidosAdmin);
 router.get('/pedidos/:id', pedidoCtrl.obtenerDetallesAdmin); 
+router.get('/comprobante/:id', pedidoCtrl.generarComprobante);
 router.put('/pedidos/:id', pedidoCtrl.actualizarPedidoAdmin);
 
 router.get('/clientes', adminUserCtrl.obtenerClientes);

@@ -2,12 +2,20 @@ document.addEventListener('DOMContentLoaded', () => {
     cargarPerfil();
     cargarPedidos();
     configurarFormulario();
+    configurarAvatar();
 });
 
 function configurarFormulario() {
     const formulario = document.getElementById('form-cuenta');
     if (formulario) {
         formulario.addEventListener('submit', guardarCuenta);
+    }
+}
+
+function configurarAvatar() {
+    const inputAvatar = document.getElementById('inputAvatar');
+    if (inputAvatar) {
+        inputAvatar.addEventListener('change', cargarAvatar);
     }
 }
 function cambiarTab(tabId) {
@@ -43,7 +51,7 @@ function mostrarNotificacion(mensaje) {
 
 async function cargarPerfil() {
     try {
-        const res = await fetch('/api/public/mi-perfil');
+        const res = await fetch('/api/public/mi-perfil', { credentials: 'same-origin' });
         if (res.status === 401) {
             window.location.href = 'login.html';
             return;
@@ -52,11 +60,24 @@ async function cargarPerfil() {
         
         const data = await res.json();
 
-
         document.getElementById('nombre-usuario').textContent = data.nombre || 'Usuario';
         document.getElementById('email-usuario').textContent = data.email || '';
-        document.getElementById('avatar-letra').textContent = data.nombre?.charAt(0).toUpperCase() || 'U';
-
+        
+        // Mostrar avatar si existe, sino mostrar letra inicial
+        const avatarLetra = document.getElementById('avatar-letra');
+        const avatarImg = document.getElementById('avatar-imagen');
+        
+        if (data.avatar) {
+            // Si tiene avatar guardado, mostrar la imagen
+            avatarImg.src = `/imagenes/perfiles/${data.avatar}?t=${Date.now()}`;
+            avatarImg.style.display = 'block';
+            avatarLetra.style.display = 'none';
+        } else {
+            // Si no tiene avatar, mostrar letra inicial
+            avatarLetra.textContent = data.nombre?.charAt(0).toUpperCase() || 'U';
+            avatarLetra.style.display = 'flex';
+            avatarImg.style.display = 'none';
+        }
 
         document.getElementById('nombre').value = data.nombre || '';
         document.getElementById('email').value = data.email || '';
@@ -67,6 +88,65 @@ async function cargarPerfil() {
         document.getElementById('nombre-usuario').textContent = 'Error al cargar';
     }
 }
+async function cargarAvatar(e) {
+    const archivo = e.target.files[0];
+    if (!archivo) return;
+
+    // Validar tipo de archivo
+    const tipos = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+    if (!tipos.includes(archivo.type)) {
+        alert('Solo se permiten imágenes (jpeg, jpg, png, gif)');
+        e.target.value = '';
+        return;
+    }
+
+    // Validar tamaño (máximo 5MB)
+    if (archivo.size > 5 * 1024 * 1024) {
+        alert('La imagen no debe pesar más de 5MB');
+        e.target.value = '';
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('avatar', archivo);
+
+    try {
+        console.log('Enviando archivo al servidor...');
+        const res = await fetch('/api/public/mi-perfil/avatar', {
+            method: 'POST',
+            body: formData,
+            credentials: 'same-origin'
+        });
+
+        console.log('Respuesta del servidor:', res.status, res.statusText);
+
+        if (res.ok) {
+            const data = await res.json();
+            console.log('Avatar actualizado:', data);
+            
+            mostrarNotificacion('✓ Foto de perfil actualizada correctamente');
+            
+            // Actualizar la imagen mostrada
+            const avatarImg = document.getElementById('avatar-imagen');
+            const avatarLetra = document.getElementById('avatar-letra');
+            
+            avatarImg.src = `/imagenes/perfiles/${data.avatar}?t=${Date.now()}`;
+            avatarImg.style.display = 'block';
+            avatarLetra.style.display = 'none';
+            
+            // Limpiar input
+            e.target.value = '';
+        } else {
+            const error = await res.text();
+            console.error('Error del servidor:', error);
+            alert('Error: ' + error);
+        }
+    } catch (error) {
+        console.error('Error al cargar avatar:', error);
+        alert('Error de conexión: ' + error.message);
+    }
+}
+
 async function guardarCuenta(e) {
     e.preventDefault();
     
@@ -118,6 +198,7 @@ async function guardarCuenta(e) {
         const res = await fetch('/api/public/mi-perfil/actualizar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
             body: JSON.stringify(datos)
         });
 
@@ -145,7 +226,7 @@ async function guardarCuenta(e) {
 
 async function cargarPedidos() {
     try {
-        const res = await fetch('/api/public/mis-pedidos');
+        const res = await fetch('/api/public/mis-pedidos', { credentials: 'same-origin' });
         const pedidos = await res.json();
         
         const contenedor = document.getElementById('lista-pedidos');
@@ -167,7 +248,8 @@ async function cargarPedidos() {
                 <div>
                     <strong>Pedido #${p.id}</strong>
                     <p style="font-size: 0.9rem; color: #666;">${fecha}</p>
-                    <button class="action-btn" style="margin-top: 5px;" onclick="verDetallesPedido(${p.id})">Ver Detalles</button>
+                    <button class="action-btn" style="margin-top: 5px; margin-right: 8px;" onclick="verDetallesPedido(${p.id})">Ver Detalles</button>
+                    <button class="action-btn" style="margin-top: 5px; background: #2a5f2a;" onclick="descargarComprobante(${p.id})">📥 Comprobante</button>
                 </div>
                 <div style="text-align: right;">
                     <p style="font-weight: bold; font-size: 1.1rem;">$${p.total}</p>
@@ -183,7 +265,7 @@ async function cargarPedidos() {
 
 async function verDetallesPedido(id) {
     try {
-        const res = await fetch(`/api/public/mis-pedidos/${id}`);
+        const res = await fetch(`/api/public/mis-pedidos/${id}`, { credentials: 'same-origin' });
         if (!res.ok) return alert('Error cargando detalles');
         
         const data = await res.json();
@@ -223,6 +305,10 @@ async function verDetallesPedido(id) {
 
 function cerrarModal() {
     document.getElementById('modalDetalle').style.display = 'none';
+}
+
+function descargarComprobante(id) {
+    window.open(`/api/public/comprobante/${id}`, '_blank');
 }
 
 window.onclick = function(event) {

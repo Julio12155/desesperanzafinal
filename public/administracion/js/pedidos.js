@@ -83,6 +83,10 @@ async function verPedido(id) {
     }
 }
 
+function descargarComprobante(id) {
+    window.open(`/api/admin/comprobante/${id}`, '_blank');
+}
+
 document.getElementById('formEstado').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!pedidoActualId) return;

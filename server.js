@@ -21,6 +21,16 @@ app.use(session({
     }
 }));
 
+// Rutas API (ANTES de express.static)
+const rutasAuth = require('./back/rutas/rutasAuth');
+const rutasAdmin = require('./back/rutas/rutasAdmin');
+const rutasPublicas = require('./back/rutas/rutasPublicas');
+
+app.use('/api/auth', rutasAuth);
+app.use('/api/admin', rutasAdmin);
+app.use('/api/public', rutasPublicas);
+
+// Middleware de administración
 app.use('/administracion', (req, res, next) => {
     if (req.session && req.session.usuarioID && req.session.rol === 'admin') {
         next(); 
@@ -29,15 +39,8 @@ app.use('/administracion', (req, res, next) => {
     }
 });
 
+// Archivos estáticos (DESPUÉS de las rutas API)
 app.use(express.static(path.join(__dirname, 'public')));
-
-const rutasAuth = require('./back/rutas/rutasAuth');
-const rutasAdmin = require('./back/rutas/rutasAdmin');
-const rutasPublicas = require('./back/rutas/rutasPublicas');
-
-app.use('/api/auth', rutasAuth);
-app.use('/api/admin', rutasAdmin);
-app.use('/api/public', rutasPublicas);
 
 app.get('/', (req, res) => {
     res.redirect('/tienda/index.html');
