@@ -67,19 +67,26 @@ async function cargarProductos() {
 
 async function cargarCategorias() {
     try {
-        const res = await fetch('/api/admin/categorias');
-        if(res.ok){
-            const categorias = await res.json();
-            const select = document.getElementById('categoria');
-            select.innerHTML = '<option value="">Seleccione...</option>';
-            categorias.forEach(cat => {
-                const opt = document.createElement('option');
-                // use category name as value (classification)
-                opt.value = cat.nombre;
-                opt.textContent = cat.nombre;
-                select.appendChild(opt);
-            });
-        }
+        // Lista fija de categorías orientadas a panadería
+        const categoriasPanaderia = [
+            'Pan Tradicional',
+            'Pan Integral',
+            'Bollería',
+            'Pastelería',
+            'Pan Artesanal',
+            'Galletas',
+            'Pan Dulce'
+
+        ];
+
+        const select = document.getElementById('categoria');
+        select.innerHTML = '<option value="">Seleccione...</option>';
+        categoriasPanaderia.forEach(nombre => {
+            const opt = document.createElement('option');
+            opt.value = nombre;
+            opt.textContent = nombre;
+            select.appendChild(opt);
+        });
     } catch (error) {
         console.error(error);
     }
