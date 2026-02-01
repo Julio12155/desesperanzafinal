@@ -16,7 +16,8 @@ function abrirModal(modo = 'crear', producto = null) {
         document.getElementById('descripcion').value = producto.descripcion;
         document.getElementById('precio').value = producto.precio;
         document.getElementById('stock').value = producto.stock;
-        document.getElementById('categoria').value = producto.categoria_id || '';
+        // When editing, select by category name (nombre_categoria) so classifications match
+        document.getElementById('categoria').value = producto.nombre_categoria || '';
     } else {
         tituloModal.textContent = 'Nuevo Producto';
         form.reset();
@@ -73,7 +74,8 @@ async function cargarCategorias() {
             select.innerHTML = '<option value="">Seleccione...</option>';
             categorias.forEach(cat => {
                 const opt = document.createElement('option');
-                opt.value = cat.id;
+                // use category name as value (classification)
+                opt.value = cat.nombre;
                 opt.textContent = cat.nombre;
                 select.appendChild(opt);
             });

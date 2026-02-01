@@ -9,7 +9,6 @@ document.getElementById('registroForm').addEventListener('submit', async (e) => 
 
     errorMsg.style.display = 'none';
 
-    // Validaciones Frontend
     if (contra.length < 8) {
         mostrarError('La contraseña debe tener al menos 8 caracteres');
         return;
@@ -20,7 +19,7 @@ document.getElementById('registroForm').addEventListener('submit', async (e) => 
         return;
     }
 
-    // Regex Check Frontend (Seguridad extra)
+
     const regexSeguro = /^[^<>]+$/;
     if (!regexSeguro.test(nombre) || !regexSeguro.test(correo) || !regexSeguro.test(contra)) {
         mostrarError('No se permiten caracteres especiales como < o >');

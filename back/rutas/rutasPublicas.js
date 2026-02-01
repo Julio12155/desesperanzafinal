@@ -11,6 +11,7 @@ router.get('/productos/:id', productoCtrl.obtenerUna);
 router.get('/categorias', productoCtrl.obtenerCategorias);
 
 router.get('/mi-perfil', soloUsuarios, clienteCtrl.obtenerPerfil);
+router.post('/mi-perfil/actualizar', soloUsuarios, clienteCtrl.actualizarPerfil);
 router.post('/mi-perfil/direccion', soloUsuarios, clienteCtrl.guardarDetallesEnvio);
 router.get('/mis-pedidos', soloUsuarios, pedidoCtrl.obtenerMisPedidos);
 router.get('/mis-pedidos/:id', soloUsuarios, pedidoCtrl.obtenerDetallesPedido);

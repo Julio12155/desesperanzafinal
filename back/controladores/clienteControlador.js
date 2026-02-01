@@ -1,4 +1,5 @@
 const db = require('../configuracion/BaseDatos');
+const bcrypt = require('bcryptjs');
 
 const obtenerPerfil = async (req, res) => {
     const id = req.session.usuarioID;
@@ -41,4 +42,64 @@ const guardarDetallesEnvio = async (req, res) => {
     }
 };
 
-module.exports = { obtenerPerfil, guardarDetallesEnvio };
+const actualizarPerfil = async (req, res) => {
+    const id = req.session.usuarioID;
+    const { nombre, email, telefono, contraseña } = req.body;
+
+    try {
+        // Validar que email no esté ya en uso por otro usuario
+        const [emailExistente] = await db.query(
+            'SELECT id FROM usuarios WHERE email = ? AND id != ?',
+            [email, id]
+        );
+
+        if (emailExistente.length > 0) {
+            return res.status(400).send('El correo electrónico ya está en uso');
+        }
+
+        // Preparar datos para actualización
+        let updateQuery = 'UPDATE usuarios SET nombre = ?, email = ?';
+        let params = [nombre, email];
+
+        // Si se proporciona contraseña, hashearla e incluirla
+        if (contraseña) {
+            const salt = await bcrypt.genSalt(10);
+            const hash = await bcrypt.hash(contraseña, salt);
+            updateQuery += ', password = ?';
+            params.push(hash);
+        }
+
+        updateQuery += ' WHERE id = ?';
+        params.push(id);
+
+        // Actualizar datos del usuario
+        await db.query(updateQuery, params);
+
+        // Actualizar teléfono en clientes_detalles
+        if (telefono) {
+            const [existe] = await db.query(
+                'SELECT id FROM clientes_detalles WHERE usuario_id = ?',
+                [id]
+            );
+
+            if (existe.length > 0) {
+                await db.query(
+                    'UPDATE clientes_detalles SET telefono = ? WHERE usuario_id = ?',
+                    [telefono, id]
+                );
+            } else {
+                await db.query(
+                    'INSERT INTO clientes_detalles (usuario_id, telefono) VALUES (?, ?)',
+                    [id, telefono]
+                );
+            }
+        }
+
+        res.json({ mensaje: 'Perfil actualizado correctamente' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error actualizando perfil');
+    }
+};
+
+module.exports = { obtenerPerfil, guardarDetallesEnvio, actualizarPerfil };

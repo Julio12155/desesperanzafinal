@@ -1,14 +1,44 @@
 document.addEventListener('DOMContentLoaded', () => {
     cargarPerfil();
     cargarPedidos();
+    configurarFormulario();
 });
 
+function configurarFormulario() {
+    const formulario = document.getElementById('form-cuenta');
+    if (formulario) {
+        formulario.addEventListener('submit', guardarCuenta);
+    }
+}
 function cambiarTab(tabId) {
     document.querySelectorAll('.seccion').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.menu-opciones button').forEach(el => el.classList.remove('active'));
     
     document.getElementById(tabId).classList.add('active');
     document.getElementById(`btn-${tabId}`).classList.add('active');
+}
+
+function mostrarNotificacion(mensaje) {
+    const notif = document.createElement('div');
+    notif.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: var(--verde-suave);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 9999;
+        animation: slideIn 0.3s ease-out;
+    `;
+    notif.textContent = mensaje;
+    document.body.appendChild(notif);
+    
+    setTimeout(() => {
+        notif.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => notif.remove(), 300);
+    }, 3000);
 }
 
 async function cargarPerfil() {
@@ -18,52 +48,100 @@ async function cargarPerfil() {
             window.location.href = 'login.html';
             return;
         }
+        if (!res.ok) throw new Error('Error al cargar perfil');
+        
         const data = await res.json();
 
-        document.getElementById('nombre-usuario').textContent = data.nombre;
-        document.getElementById('email-usuario').textContent = data.email;
-        document.getElementById('avatar-letra').textContent = data.nombre.charAt(0).toUpperCase();
 
+        document.getElementById('nombre-usuario').textContent = data.nombre || 'Usuario';
+        document.getElementById('email-usuario').textContent = data.email || '';
+        document.getElementById('avatar-letra').textContent = data.nombre?.charAt(0).toUpperCase() || 'U';
+
+
+        document.getElementById('nombre').value = data.nombre || '';
+        document.getElementById('email').value = data.email || '';
         document.getElementById('tel').value = data.telefono || '';
-        document.getElementById('calle').value = data.direccion_calle || '';
-        document.getElementById('ciudad').value = data.ciudad || '';
-        document.getElementById('estado').value = data.estado || '';
-        document.getElementById('cp').value = data.codigo_postal || '';
-        document.getElementById('instrucc').value = data.instrucciones_envio || '';
 
     } catch (error) {
-        console.error(error);
+        console.error('Error cargando perfil:', error);
+        document.getElementById('nombre-usuario').textContent = 'Error al cargar';
     }
 }
-
-document.getElementById('form-direccion').addEventListener('submit', async (e) => {
+async function guardarCuenta(e) {
     e.preventDefault();
     
+    const nombre = document.getElementById('nombre').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const tel = document.getElementById('tel').value.trim();
+    const contra = document.getElementById('contra').value.trim();
+    const confirmar = document.getElementById('confirmar').value.trim();
+
+    if (!nombre || !email) {
+        alert('Por favor completa todos los campos obligatorios');
+        return;
+    }
+
+    // Validar cambio de contraseña
+    if (contra || confirmar) {
+        // Si al menos uno de los campos tiene valor
+        if (!contra || !confirmar) {
+            alert('Por favor completa ambos campos de contraseña');
+            return;
+        }
+        if (contra.length < 8) {
+            alert('La contraseña debe tener al menos 8 caracteres');
+            return;
+        }
+        if (contra !== confirmar) {
+            alert('Las contraseñas no coinciden');
+            return;
+        }
+    }
+
+    const boton = document.querySelector('.btn-guardar');
+    const textoOriginal = boton.textContent;
+    boton.textContent = 'Guardando...';
+    boton.disabled = true;
+
     const datos = {
-        tel: document.getElementById('tel').value,
-        calle: document.getElementById('calle').value,
-        ciudad: document.getElementById('ciudad').value,
-        estado: document.getElementById('estado').value,
-        cp: document.getElementById('cp').value,
-        instrucc: document.getElementById('instrucc').value
+        nombre,
+        email,
+        telefono: tel
     };
 
+    // Solo agregar contraseña si se proporcionó
+    if (contra) {
+        datos.contraseña = contra;
+    }
+
     try {
-        const res = await fetch('/api/public/mi-perfil/direccion', {
+        const res = await fetch('/api/public/mi-perfil/actualizar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(datos)
         });
 
         if (res.ok) {
-            alert('Dirección guardada correctamente');
+            mostrarNotificacion('✓ Datos de cuenta guardados correctamente');
+            
+            // Limpiar campos de contraseña después de guardar
+            document.getElementById('contra').value = '';
+            document.getElementById('confirmar').value = '';
+
+            await cargarPerfil();
         } else {
-            alert('Error al guardar');
+            const error = await res.text();
+            alert('Error: ' + error);
         }
     } catch (error) {
-        console.error(error);
+        console.error('Error al guardar:', error);
+        alert('Error de conexión al guardar los datos');
+    } finally {
+        boton.textContent = textoOriginal;
+        boton.disabled = false;
     }
-});
+}
+
 
 async function cargarPedidos() {
     try {

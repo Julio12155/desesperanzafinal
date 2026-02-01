@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Carrito - La desesperanza</title>
-    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="../css/estilos-unificados.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
 
@@ -12,15 +13,15 @@
         <nav>
             <a href="#" class="logo">La desesperanza</a>
             <ul class="nav-menu">
-                <li><a href="#inicio" style="color: var(--verde-suave);">Inicio</a></li>
+                <li><a href="index.html" style="color: var(--verde-suave);">Inicio</a></li>
                 <li><a href="catalogo.html" style="color: var(--verde-suave);">Catálogo</a></li>
-                <li><a href="#historia" style="color: var(--verde-suave);">Nosotros</a></li>
-                <li><a href="../clientes/login.html" class="btn-login" style="color: var(--verde-suave);">Iniciar Sesión</a></li>
+                <li><a href="carrito.html" style="color: var(--verde-suave);"> Carrito</a></li>
+                 <li><a href="../clientes/login.html" class="btn-login" id="nav-login" style="color: var(--verde-suave);">Iniciar Sesión</a></li>
             </ul>
         </nav>
     </header>
 
-    <section class="hero">
+    <section class="hero" style="height: 30vh;">
         <div>
             <h1>Tu Carrito de Compras</h1>
             <p>Revisa tus plantas antes de finalizar el pedido</p>
@@ -49,6 +50,11 @@
                 </div>
                 <button class="btn-checkout" onclick="procesarCompra()">Proceder al Pago</button>
                 <a href="catalogo.html" style="display: block; text-align: center; margin-top: 1rem; color: var(--texto-claro); text-decoration: none;">Seguir comprando</a>
+                
+                <!-- Mapa con Leaflet -->
+                <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Ubicación de Entrega</h3>
+                <div id="mapa-entrega" style="height: 300px; margin-top: 1rem; border-radius: 8px; overflow: hidden; border: 2px solid var(--borde);"></div>
+                <button type="button" id="btn-ubicacion-actual" style="width: 100%; margin-top: 1rem; padding: 0.8rem; background-color: var(--verde-suave); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.95rem;">📍 Usar mi ubicación actual</button>
             </div>
         </div>
     </section>
@@ -58,5 +64,8 @@
     </footer>
 
     <script src="js/carrito.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/mapa.js"></script>
+    <script src="js/header.js"></script>
 </body>
 </html>

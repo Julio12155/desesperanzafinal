@@ -3,26 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Vivero Solís</title>
+    <title>Login - La desesperanza</title>
+    <link rel="stylesheet" href="../css/estilos-unificados.css">
     <style>
         :root {
-            --verde-acento: #5F8D4E;
-            --verde-suave: #7A9B76;
-            --texto: #333;
+            --verde-suave: #2D5016;
+            --verde-acento: #C41E3A;
+            --texto: #333333;
             --beige: #F5F1E8;
+            --arena: #E8DCC4;
+            --terracota: #C07855;
+            --dorado: #D4AF37;
+            --gris-claro: #F9F9F9;
+            --blanco: #FFFFFF;
         }
-        body { font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: var(--beige); margin: 0; }
-        .login-container { background: white; padding: 2.5rem; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 350px; }
-        h2 { text-align: center; color: var(--verde-acento); margin-bottom: 1.5rem; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 0.95rem; }
-        input:focus { outline: none; border-color: var(--verde-acento); }
-        button { width: 100%; padding: 12px; background-color: var(--verde-acento); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem; margin-top: 10px; transition: background 0.3s; }
-        button:hover { background-color: var(--verde-suave); }
-        .error { color: #C07855; font-size: 0.9rem; text-align: center; display: none; margin-top: 10px; }
-        .links-container { text-align: center; margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px; }
-        .back-link { display: block; margin-top: 10px; text-decoration: none; color: #666; font-size: 0.9rem; }
-        .register-link { color: var(--verde-acento); font-weight: bold; text-decoration: none; }
-        .back-link:hover, .register-link:hover { text-decoration: underline; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            background-color: var(--beige); 
+            margin: 0; 
+            padding: 2rem;
+        }
+        .login-container { 
+            background: var(--blanco); 
+            padding: 2.5rem; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+            width: 100%;
+            max-width: 400px;
+        }
+        h2 { 
+            text-align: center; 
+            color: var(--verde-acento); 
+            margin-bottom: 1.5rem; 
+            font-size: 1.8rem;
+        }
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            margin: 8px 0 12px 0; 
+            border: 1px solid var(--borde); 
+            border-radius: 6px; 
+            box-sizing: border-box; 
+            font-size: 0.95rem;
+            transition: border-color 0.3s;
+        }
+        input:focus { 
+            outline: none; 
+            border-color: var(--verde-acento);
+            box-shadow: 0 0 0 2px rgba(196, 30, 58, 0.1);
+        }
+        button { 
+            width: 100%; 
+            padding: 12px; 
+            background-color: var(--verde-acento); 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 1rem; 
+            margin-top: 15px; 
+            transition: background 0.3s;
+        }
+        button:hover { 
+            background-color: var(--verde-suave);
+        }
+        .error { 
+            color: var(--terracota); 
+            font-size: 0.9rem; 
+            text-align: center; 
+            display: none; 
+            margin-top: 10px; 
+            padding: 10px;
+            background-color: rgba(192, 120, 85, 0.1);
+            border-radius: 6px;
+        }
+        .links-container { 
+            text-align: center; 
+            margin-top: 20px; 
+            border-top: 1px solid var(--borde); 
+            padding-top: 15px; 
+        }
+        .back-link { 
+            display: block; 
+            margin-top: 10px; 
+            text-decoration: none; 
+            color: var(--texto-claro); 
+            font-size: 0.9rem; 
+            transition: color 0.3s;
+        }
+        .register-link { 
+            color: var(--verde-acento); 
+            font-weight: bold; 
+            text-decoration: none; 
+        }
+        .back-link:hover, .register-link:hover { 
+            text-decoration: underline;
+            color: var(--verde-suave);
+        }
     </style>
 </head>
 <body>

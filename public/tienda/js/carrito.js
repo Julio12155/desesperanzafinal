@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('lista-carrito')) {
         renderizarCarrito();
+        // Cargar dirección en segundo plano sin bloquear
+        cargarDireccionEnCarrito();
     }
 });
 
@@ -167,4 +169,92 @@ async function procesarCompra() {
         console.error(error);
         alert('Error de conexión');
     }
+}
+
+async function cargarDireccionEnCarrito() {
+    try {
+        const res = await fetch('/api/public/mi-perfil');
+        
+        if (res.status === 401) {
+
+            const textoDireccion = document.getElementById('texto-direccion');
+            textoDireccion.innerHTML = `
+                <strong style="color: var(--terracota);">⚠️ Debes iniciar sesión para ver tu dirección.</strong><br>
+                <a href="../clientes/login.html" style="color: var(--verde-suave); text-decoration: underline;">Iniciar sesión</a>
+            `;
+            return;
+        }
+        
+        if (res.ok) {
+            const usuario = await res.json();
+            const textoDireccion = document.getElementById('texto-direccion');
+            
+            if (usuario.direccion && usuario.direccion.trim()) {
+                textoDireccion.innerHTML = `
+                    <strong>Dirección de entrega:</strong><br>
+                    ${usuario.direccion}
+                `;
+            } else {
+                textoDireccion.innerHTML = `
+                    <strong style="color: var(--terracota);">⚠️ No has establecido una dirección de entrega.</strong><br>
+                    Por favor, <a href="../clientes/perfil.html" style="color: var(--verde-suave); text-decoration: underline;">configura tu dirección</a> antes de finalizar la compra.
+                `;
+            }
+        } else {
+            const textoDireccion = document.getElementById('texto-direccion');
+            textoDireccion.innerHTML = `
+                <strong style="color: var(--terracota);">⚠️ Error al cargar tu dirección.</strong><br>
+                Por favor, <a href="../clientes/perfil.html" style="color: var(--verde-suave); text-decoration: underline;">establece tu dirección aquí</a>.
+            `;
+        }
+    } catch (error) {
+        console.log('Error cargando dirección:', error);
+        const textoDireccion = document.getElementById('texto-direccion');
+        if (textoDireccion) {
+            textoDireccion.innerHTML = `
+                <strong style="color: var(--terracota);">⚠️ No se pudo cargar tu dirección.</strong><br>
+                Por favor, <a href="../clientes/perfil.html" style="color: var(--verde-suave); text-decoration: underline;">establece tu dirección aquí</a>.
+            `;
+        }
+    }
+    async function cambiarPassword(e) {
+    e.preventDefault();
+    
+    const actual = document.getElementById('password-actual').value;
+    const nueva = document.getElementById('password-nueva').value;
+    const confirmar = document.getElementById('password-confirmar').value;
+
+    // Validaciones
+    if (nueva.length < 8) {
+        alert('⚠️ La nueva contraseña debe tener al menos 8 caracteres');
+        return;
+    }
+
+    if (nueva !== confirmar) {
+        alert('⚠️ Las contraseñas no coinciden');
+        return;
+    }
+
+    try {
+        const res = await fetch('/api/public/mi-perfil/password', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                password_actual: actual,
+                password_nueva: nueva
+            })
+        });
+
+        if (res.ok) {
+            alert('✅ Contraseña actualizada correctamente');
+            document.getElementById('form-password').reset();
+        } else {
+            const error = await res.json();
+            alert('❌ Error: ' + (error.mensaje || 'Contraseña actual incorrecta'));
+        }
+    } catch (error) {
+        console.error(error);
+        alert('❌ Error de conexión');
+    }
+}
 }

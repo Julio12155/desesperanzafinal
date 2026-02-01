@@ -67,9 +67,25 @@ const crearProducto = async (req, res) => {
     }
 
     try {
+        // resolver categoria: puede ser id (string de números) o nombre
+        let categoriaId = null;
+        if (categoria) {
+            if (esNumero(categoria)) {
+                categoriaId = categoria;
+            } else {
+                const [rows] = await db.query('SELECT id FROM categorias WHERE nombre = ?', [categoria]);
+                if (rows.length > 0) {
+                    categoriaId = rows[0].id;
+                } else {
+                    const result = await db.query('INSERT INTO categorias (nombre) VALUES (?)', [categoria]);
+                    categoriaId = result[0].insertId || result.insertId;
+                }
+            }
+        }
+
         await db.query(
             'INSERT INTO productos (nombre, descripcion, precio, stock, categoria_id, imagen) VALUES (?, ?, ?, ?, ?, ?)',
-            [nom, desc, prec, stock, categoria, imagen]
+            [nom, desc, prec, stock, categoriaId, imagen]
         );
         res.send('Producto creado');
     } catch (error) {
@@ -85,15 +101,30 @@ const editarProducto = async (req, res) => {
     const nuevaImagen = req.file ? req.file.filename : null;
 
     try {
+        // resolver categoria similar a crearProducto
+        let categoriaId = null;
+        if (categoria) {
+            if (esNumero(categoria)) {
+                categoriaId = categoria;
+            } else {
+                const [rows] = await db.query('SELECT id FROM categorias WHERE nombre = ?', [categoria]);
+                if (rows.length > 0) {
+                    categoriaId = rows[0].id;
+                } else {
+                    const result = await db.query('INSERT INTO categorias (nombre) VALUES (?)', [categoria]);
+                    categoriaId = result[0].insertId || result.insertId;
+                }
+            }
+        }
+
         let sql;
         let params;
-
         if (nuevaImagen) {
             sql = 'UPDATE productos SET nombre=?, descripcion=?, precio=?, stock=?, categoria_id=?, imagen=? WHERE id=?';
-            params = [nom, desc, prec, stock, categoria, nuevaImagen, id];
+            params = [nom, desc, prec, stock, categoriaId, nuevaImagen, id];
         } else {
             sql = 'UPDATE productos SET nombre=?, descripcion=?, precio=?, stock=?, categoria_id=? WHERE id=?';
-            params = [nom, desc, prec, stock, categoria, id];
+            params = [nom, desc, prec, stock, categoriaId, id];
         }
 
         await db.query(sql, params);
