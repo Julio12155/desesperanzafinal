@@ -61,7 +61,7 @@ async function verPedido(id) {
         
         document.getElementById('sel-estado').value = info.estado;
         document.getElementById('txt-total').value = `$${info.total}`;
-        document.getElementById('txt-comentarios').value = info.comentarios_admin || '';
+        document.getElementById('txt-comentarios').value = info.comentarios || '';
 
         const tbody = document.getElementById('lista-items');
         tbody.innerHTML = '';
