@@ -3,10 +3,8 @@ let marcadorActual = null;
 
 const CDMX_COORDS = [19.4326, -99.1332];
 
-// Función para inicializar el mapa cuando sea necesario
 function inicializarMapaCarrito() {
     if (document.readyState === 'loading') {
-        // El DOM aún se está cargando
         document.addEventListener('DOMContentLoaded', () => {
             if (document.getElementById('mapa-entrega')) {
                 inicializarMapa();
@@ -14,7 +12,6 @@ function inicializarMapaCarrito() {
             }
         });
     } else {
-        // El DOM ya está listo
         if (document.getElementById('mapa-entrega')) {
             inicializarMapa();
             configurarBotones();
@@ -35,7 +32,6 @@ function inicializarMapa() {
     marcadorActual = agregarMarcador(coordenadasDefecto, 'Ubicación de entrega');
 
     cargarDireccionDelUsuario();
-    
 
     mapaInstancia.on('click', (e) => {
         actualizarUbicacionMapa(e.latlng.lat, e.latlng.lng, 'Ubicación seleccionada');
@@ -64,7 +60,7 @@ async function cargarDireccionDelUsuario() {
             }
         }
     } catch (error) {
-        console.log('No se pudo cargar la ubicación del usuario:', error);
+        console.log(error);
     }
 }
 
@@ -92,8 +88,8 @@ function usarUbicacionActual() {
                 }, 2000);
             },
             (error) => {
-                console.error('Error al obtener ubicación:', error);
-                alert('No se pudo acceder a tu ubicación. Asegúrate de haber dado permiso.');
+                console.error(error);
+                alert('No se pudo acceder a tu ubicación.');
                 btnUbicacion.textContent = '📍 Usar mi ubicación actual';
                 btnUbicacion.disabled = false;
             }
@@ -108,28 +104,20 @@ function usarUbicacionActual() {
 function actualizarUbicacionMapa(lat, lng, titulo) {
     if (mapaInstancia) {
         mapaInstancia.setView([lat, lng], 15);
-        
 
         if (marcadorActual) {
             mapaInstancia.removeLayer(marcadorActual);
         }
-        
 
         marcadorActual = agregarMarcador([lat, lng], titulo);
-        
 
         geocodificarInversa(lat, lng);
-        
-        console.log('Ubicación actualizada:', lat, lng);
     }
 }
 
 async function geocodificarInversa(lat, lng) {
     try {
-        const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
-            { headers: { 'Accept-Language': 'es' } }
-        );
+        const res = await fetch(`/api/geocoding/reverse?lat=${lat}&lon=${lng}`);
         
         if (res.ok) {
             const data = await res.json();
@@ -141,7 +129,6 @@ async function geocodificarInversa(lat, lng) {
             const estado = address.state || '';
             const cp = address.postcode || '';
             
-            // Solo actualizar campos de formulario si existen en la página
             const campoCalle = document.getElementById('calle');
             if (campoCalle) {
                 campoCalle.value = numero ? `${calle} ${numero}` : calle;
@@ -149,7 +136,6 @@ async function geocodificarInversa(lat, lng) {
             if (document.getElementById('ciudad')) document.getElementById('ciudad').value = ciudad;
             if (document.getElementById('estado')) document.getElementById('estado').value = estado;
             if (document.getElementById('cp')) document.getElementById('cp').value = cp;
-            
 
             localStorage.setItem('ubicacionSeleccionada', JSON.stringify({
                 lat: lat,
@@ -161,13 +147,10 @@ async function geocodificarInversa(lat, lng) {
                 cp: cp,
                 timestamp: new Date().toISOString()
             }));
-            
-            console.log('Datos geocodificados guardados en localStorage');
         }
     } catch (error) {
-        console.log('Error en geocodificación inversa:', error);
+        console.log(error);
     }
 }
 
-// Inicializar mapa cuando se carga el script
 inicializarMapaCarrito();
