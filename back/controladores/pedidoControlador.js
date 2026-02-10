@@ -5,21 +5,10 @@ const crearPedido = async (req, res) => {
     const { productos, direccion, lat, lng } = req.body; 
 
     try {
-        // Validar que hay dirección
         if (!direccion || direccion.trim() === '') {
             return res.status(400).json({ 
                 error: 'Falta direccion', 
-                mensaje: 'Debes registrar tu dirección de envío en tu perfil antes de comprar.' 
-            });
-        }
-
-        // Verificar que el usuario tiene detalles guardados
-        const [detalles] = await db.query('SELECT id FROM clientes_detalles WHERE usuario_id = ?', [id_usuario]);
-        
-        if (detalles.length === 0) {
-            return res.status(400).json({ 
-                error: 'Falta direccion', 
-                mensaje: 'Debes registrar tu dirección de envío en tu perfil antes de comprar.' 
+                mensaje: 'No se ha detectado una dirección de entrega válida.' 
             });
         }
 
@@ -35,7 +24,6 @@ const crearPedido = async (req, res) => {
             total += prod[0].precio * item.cantidad;
         }
 
-        // Crear pedido con dirección y coordenadas
         const [resPedido] = await db.query(
             'INSERT INTO pedidos (usuario_id, total, estado, direccion_entrega, latitud, longitud) VALUES (?, ?, "pendiente", ?, ?, ?)', 
             [id_usuario, total, direccion, lat || null, lng || null]
@@ -43,7 +31,6 @@ const crearPedido = async (req, res) => {
         
         const idPedido = resPedido.insertId;
 
-        // Guardar detalles del pedido
         for (let item of productos) {
             const [prod] = await db.query('SELECT precio FROM productos WHERE id = ?', [item.id]);
             

@@ -1,17 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('lista-carrito')) {
         renderizarCarrito();
-        // Cargar dirección en segundo plano sin bloquear
         cargarDireccionEnCarrito();
     }
 });
 
 function obtenerCarrito() {
-    return JSON.parse(localStorage.getItem('carritoVivero')) || [];
+    return JSON.parse(localStorage.getItem('carritoPanes')) || [];
 }
 
 function guardarCarrito(carrito) {
-    localStorage.setItem('carritoVivero', JSON.stringify(carrito));
+    localStorage.setItem('carritoPanes', JSON.stringify(carrito));
 }
 
 function agregarAlCarrito(id, nombre, precio, imagen, stockMaximo, cantidadSolicitada) {
@@ -139,7 +138,7 @@ async function procesarCompra() {
     }));
 
     try {
-        // Obtener ubicación del mapa (desde localStorage)
+   
         const ubicacionGuardada = localStorage.getItem('ubicacionSeleccionada');
         
         if (!ubicacionGuardada) {
@@ -149,8 +148,7 @@ async function procesarCompra() {
 
         const ubicacion = JSON.parse(ubicacionGuardada);
         const { lat, lng, calle, numero, ciudad, estado, cp } = ubicacion;
-        
-        // Construir dirección completa
+
         const calleCompleta = numero ? `${calle} ${numero}` : calle;
         const direccion = `${calleCompleta}, ${ciudad}, ${estado} ${cp}`.trim();
 
@@ -184,7 +182,7 @@ async function procesarCompra() {
         if (res.ok) {
             const data = await res.json();
             alert('¡Compra realizada con éxito! Pedido #' + data.pedidoId);
-            localStorage.removeItem('carritoVivero');
+            localStorage.removeItem('carritoPanes');
             localStorage.removeItem('ubicacionSeleccionada');
             window.location.href = '../clientes/perfil.html';
         } else {
@@ -197,7 +195,6 @@ async function procesarCompra() {
         alert('Error: ' + error.message);
     }
 }
-  
 
 async function cargarDireccionEnCarrito() {
     try {
@@ -245,14 +242,15 @@ async function cargarDireccionEnCarrito() {
             `;
         }
     }
-    async function cambiarPassword(e) {
+}
+
+async function cambiarPassword(e) {
     e.preventDefault();
     
     const actual = document.getElementById('password-actual').value;
     const nueva = document.getElementById('password-nueva').value;
     const confirmar = document.getElementById('password-confirmar').value;
 
-    // Validaciones
     if (nueva.length < 8) {
         alert('⚠️ La nueva contraseña debe tener al menos 8 caracteres');
         return;
@@ -284,5 +282,4 @@ async function cargarDireccionEnCarrito() {
         console.error(error);
         alert('❌ Error de conexión');
     }
-}
 }
